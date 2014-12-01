@@ -1,0 +1,236 @@
+<script src="processing-1.4.1.js"></script>
+<script type="text/processing" data-processing-target="mycanvas">
+
+/* @pjs globalKeyEvents = "true"; */
+int waterAmount;
+int maxWaterReached;
+int startKettle;
+int lockAddWater;
+float boilTime;
+int x1;
+int y1;
+int x2;
+int y2;
+int x3;
+int y3;
+int size1;
+int size2;
+int size3;
+int bubble1Horizontal;
+int bubble2Horizontal;
+int bubble3Horizontal;
+
+void setup(){
+
+	size( 500, 500 );
+	frameRate( 30 );
+
+	waterAmount = 0;
+	maxWaterReached = 0;
+	startKettle = 0;
+	boilTime = 0;
+	lockAddWater = 0;
+	
+	x1 = 30;
+	y1 = 200;
+	x2 = 30;
+	y2 = 200;
+	x3 = 30;
+	y3 = 200;
+	bubble1Horizontal = 0;
+	bubble2Horizontal = 0;
+	bubble3Horizontal = 0;
+
+}
+
+
+void draw()
+{
+	background(0,0,0);
+
+	noStroke();
+
+	// Display different results for the different states of the button
+	if (maxWaterReached == 0)
+	{
+		fill(255,255,255);
+		rect(350,250,100,50);
+		fill(0,0,0);
+		text("Add Water",370,280);
+	}
+	if (maxWaterReached == 1)
+	{
+		fill(255,50,50);
+		rect(350,250,100,50);
+		fill(0,0,0);
+		text("MAX Water",370,280);
+	}
+
+	// Add water button
+	if(mousePressed == true && mouseButton == LEFT)
+	{
+		if (mouseX > 350 && mouseX < 450 && mouseY > 250 && mouseY < 300 && lockAddWater == 0)
+		{
+			if (waterAmount < 200)
+			{
+				waterAmount = waterAmount + 2;
+			}
+			else
+			{
+				maxWaterReached = 1;
+			}
+		}
+	}
+
+	// Water
+	fill(50,100,255);
+	rect(100,360-waterAmount,100,waterAmount);
+
+	// Kettle	
+	stroke(200,200,200);
+	line(100,360,100,160);
+	line(100,360,200,360);
+	line(200,160,200,360);
+
+	// Start Kettle Button
+	if (startKettle == 0)
+	{
+		fill(255,255,255);
+		rect(350,310,100,50);
+		fill(0,0,0);
+		text("Start Kettle",370,340);
+		boilTime = (waterAmount) * 10;
+	}
+	if (startKettle == 1)
+	{
+		fill(55,255,55);
+		rect(350,310,100,50);
+		fill(0,0,0);
+		text("Start Kettle",370,340);
+		fill(255,255,255);
+		if(boilTime < 200)
+		{
+			fill(255,80,80);
+		}
+		text("Time to boil water: "+boilTime,320,120);
+		if (boilTime > 0)
+		{
+			boilTime = boilTime - 1;
+		}
+		else
+		{
+			lockAddWater = 0;
+			startKettle = 0;
+		}
+	}
+
+	// Start Kettle
+	if(mousePressed == true && mouseButton == LEFT)
+	{
+		if (mouseX > 350 && mouseX < 450 && mouseY > 310 && mouseY < 360 && startKettle == 0)
+		{
+			startKettle = 1;
+			lockAddWater = 1;
+			y1 = 360 - waterAmount - random(19,29);
+			x1 = random(119,179);
+			y2 = 360 - waterAmount - random(20,30);
+			x2 = random(120,180);
+			y3 = 360 - waterAmount - random(21,31);
+			x3 = random(121,181);
+			
+			size1 = random(9,29);
+			size2 = random(10,30);
+			size3 = random(11,31);
+			bubble1Horizontal = random(0,1);
+			bubble2Horizontal = random(0,1);
+		}
+	}
+
+	if (boilTime < 200 && startKettle == 1)
+	{
+		// ball 1 controls
+		if (x1 > 200 && y1 > 160)
+		{
+			bubble1Horizontal = 1;
+		}
+		if (x1 < 100 && y1 > 160)
+		{
+			bubble1Horizontal = 0;
+		}
+		if (bubble1Horizontal == 0)
+		{
+			x1 = x1 + 1;
+		}
+		if (bubble1Horizontal == 1)
+		{
+			x1 = x1 - 1;
+		}
+		y1 = y1 - random(3,5);
+
+		if (y1 < 360 - waterAmount - 70)
+		{
+			y1 = 360 - waterAmount - random(20,30);
+			x1 = random(120,180);
+		}
+
+		// ball 2 controls
+		if (x2 > 200 && y2 > 160)
+		{
+			bubble1Horizontal = 1;
+		}
+		if (x2 < 100 && y2 > 160)
+		{
+			bubble2Horizontal = 0;
+		}
+		if (bubble2Horizontal == 0)
+		{
+			x2 = x2 + 1;
+		}
+		if (bubble1Horizontal == 1)
+		{
+			x2 = x2 - 1;
+		}
+		y2 = y2 - random(3,5);
+
+		if (y2 < 360 - waterAmount - 70 - random(10,15))
+		{
+			y2 = 360 - waterAmount - random(20,30);
+			x2 = random(120,180);
+		}
+
+		// ball 3 controls
+		if (x3 > 200 && y3 > 160)
+		{
+			bubble3Horizontal = 1;
+		}
+		if (x3 < 100 && y3 > 160)
+		{
+			bubble3Horizontal = 0;
+		}
+		if (bubble3Horizontal == 0)
+		{
+			x3 = x3 + 1;
+		}
+		if (bubble3Horizontal == 1)
+		{
+			x3 = x3 - 1;
+		}
+		y3 = y3 - random(3,5);
+
+		if (y3 < 360 - waterAmount - 70 - random(20,40))
+		{
+			y3 = 360 - waterAmount - random(20,30);
+			x3 = random(120,180);
+		}
+
+		noFill();
+		stroke(255,255,255);
+		ellipse(x1,y1,size1,size1);
+		ellipse(x2,y2,size2,size2);
+		ellipse(x3,y3,size3,size3);
+	}
+
+}
+
+</script>
+<canvas id="mycanvas"></canvas>
